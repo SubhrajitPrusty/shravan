@@ -1,16 +1,9 @@
-
-
 import numpy as np
 import os
 import six.moves.urllib as urllib
-import sys
 import tarfile
 import tensorflow as tf
-
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
-from PIL import Image
+import cv2
 
 import speech_recognition as sr  
 
@@ -18,20 +11,8 @@ import pyttsx3 as p
 import time
 
 from utils import label_map_util
-
 from utils import visualization_utils as vis_util
 
-from weather import Weather, Unit
-
-
-import numpy as np
-from numpy import ones,vstack
-from numpy.linalg import lstsq
-import math
-from scipy.optimize import curve_fit
-
-from googlemaps import googlemaps
-import geocoder
 # # Model preparation 
 # Any model exported using the `export_inference_graph.py` tool can be loaded here simply by changing `PATH_TO_CKPT` to point to a new .pb file.  
 # By default we use an "SSD with Mobilenet" model here. See the [detection model zoo](https://github.com/tensorflow/models/blob/master/object_detection/g3doc/detection_model_zoo.md) for a list of other models that can be run out-of-the-box with varying speeds and accuracies.
@@ -85,7 +66,6 @@ category_index = label_map_util.create_category_index(categories)
 
 #intializing the web camera device
 
-import cv2
 cap = cv2.VideoCapture(0)
 
 def speak(str):
