@@ -67,7 +67,7 @@ category_index = label_map_util.create_category_index(categories)
 
 #intializing the web camera device
 def getImage():
-    LINK = "http://172.16.0.153:8080/shot.jpg"
+    LINK = "http://10.42.0.99:8080/shot.jpg"
     r = requests.get(LINK)
     nparr = np.fromstring(r.content, np.uint8)
     cimg = cv2.imdecode(nparr, cv2.IMREAD_ANYCOLOR)
@@ -75,7 +75,7 @@ def getImage():
     return cimg
 
 cap = cv2.VideoCapture(0)
-#cap = getImage()                        #phoneCam
+# cap = getImage()                        #phoneCam
 def speak(str):
     engine =p.init()
     engine.say(str)
@@ -84,8 +84,8 @@ def speak(str):
     
     
 def listener():
-    retu=input('write:')
-    return(retu)
+    retu=input('write: ')
+    return (retu)
     
 def listener1():
     r = sr.Recognizer()                                                                                   
@@ -102,12 +102,7 @@ def listener1():
     return(r.recognize_google(audio))
     
 
-    
-
-    
 todo=0
-
-      
         
 def dodger():
     for i,b in enumerate(boxes[0]):
@@ -129,16 +124,21 @@ def dodger():
 def func():
     global todo
     speak("what do you want me to do")
-    instruct=input("write")
+    print("what do you want me to do?")
+    print("1: find x\n2: walk with me\n3: how is the weather")
+    instruct=input("Answer : ")
     lis=instruct.split(" ")
+
     if lis[0]=='find':
         todo=1
-        print('finding')
+
         #speak('what do you want to search for')
         #print('speak')
         #stri=listener()
         #obj=stri
+        
         obj=lis[-1]
+        print('finding '+obj)
         return obj
         
     elif lis[0]=='walk':
@@ -146,6 +146,7 @@ def func():
         return None
     elif lis[-1]=='weather':
         todo=3
+        return None
     else:
         todo=0
         return None
@@ -154,8 +155,9 @@ def finder(obj):
     for i in range(len(boxes[0])):
           score = scores[0][i]
           name = category_index[classes[0][i]]['name']
-          if score > 0.7 and name==obj:
+          if score > 0.5 and name == obj:
               speak(name)
+              print(name, "is in center")
               
 def climate():
     g = geocoder.ip('me')
@@ -175,8 +177,8 @@ with detection_graph.as_default():
   with tf.Session(graph=detection_graph) as sess:
    ret = True
    while (ret):
-      ret,image_np = cap.read()
-      #image_np=getImage()      #phoneCam
+      # ret,image_np = cap.read()
+      image_np = getImage()
       # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
       image_np_expanded = np.expand_dims(image_np, axis=0)
       image_tensor = detection_graph.get_tensor_by_name('image_tensor:0')
@@ -212,15 +214,11 @@ with detection_graph.as_default():
           climate()
           break
       
-      cv2.imshow('image',cv2.resize(image_np,(1280,960)))
+      cv2.imshow('image',cv2.resize(image_np,(640,480)))
       if cv2.waitKey(25) & 0xFF == ord('q'):
           cv2.destroyAllWindows()
           cap.release()
           break
+      
 cv2.destroyAllWindows()
 cap.release()
-
-
-
-
-
