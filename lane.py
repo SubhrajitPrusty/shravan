@@ -30,7 +30,7 @@ while True:
 			
 
 	cv2.imshow("frame", cv2.resize(frame, (640, 480)))
-	cv2.imshow("edges", cv2.resize(edges, (640, 480)))
+	# cv2.imshow("edges", cv2.resize(edges, (640, 480)))
 
 	key = cv2.waitKey(25)
 	if key == 27:
