@@ -233,6 +233,8 @@ with detection_graph.as_default():
 				cv2.destroyAllWindows()
 				cap.release()
 				break
+			elif cv2.waitKey(5) & 0xFF == ord('s'):   #for sending mail
+				break
 
 cv2.destroyAllWindows()
 cap.release()
