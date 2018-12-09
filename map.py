@@ -2,7 +2,7 @@ import requests
 import json
 
 def getCoord():
-    LINK = "http://10.42.0.1:5000/send"
+    LINK = "http://localhost:5000/send"
     r = requests.get(LINK)
     print(r.json())
 

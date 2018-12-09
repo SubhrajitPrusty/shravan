@@ -1,9 +1,8 @@
 import cv2
 import numpy as np
 
-video = cv2.VideoCapture("test2.1.mp4")
-flag=0
-streak=0
+video = cv2.VideoCapture("lane_video.mp4")
+
 while True:
 	ret, orig_frame = video.read()
 	if not ret:
@@ -22,20 +21,16 @@ while True:
 			x1, y1, x2, y2 = line[0]
 			cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 0), 5)
 			vari=((y2-y1)/(x2-x1))
-			if streak>=3:
-				flag=1
-
-			if(vari<-0.5 or flag == 1):
-			   print('straight')
-			   streak=0
+			
+			if ( vari<-0.5 ):
+			   print('straight')			   
 			   continue
 
 			print('right')
-			streak+=1
+			
 
-
-	cv2.imshow("frame", frame)
-	cv2.imshow("edges", edges)
+	cv2.imshow("frame", cv2.resize(frame, (640, 480)))
+	cv2.imshow("edges", cv2.resize(edges, (640, 480)))
 
 	key = cv2.waitKey(25)
 	if key == 27:
