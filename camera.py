@@ -1,31 +1,21 @@
-# Using Android IP Webcam video .jpg stream (tested) in Python2 OpenCV3
-import requests
 import cv2
 import numpy as np
-import time
+import requests
 
 
-# Replace the URL with your own IPwebcam shot.jpg IP:port
-url='http://172.16.0.153:8080/video'
+def getImage():
+    LINK = "http://172.16.0.153:8080/shot.jpg"
+    r = requests.get(LINK)
+    nparr = np.fromstring(r.content, np.uint8)
+    cimg = cv2.imdecode(nparr, cv2.IMREAD_ANYCOLOR)
 
+    return cimg
 
-while True:
-    # Use urllib to get the image from the IP camera
-    imgResp = requests.get(url).content
+if __name__ == "__main__":
+    while True:
+        img = getImage()
+        cv2.imshow("CAMERA", img)
 
-    # Numpy to convert into a array
-    imgNp = np.array(bytearray(imgResp.content),dtype=np.uint8)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-    # Finally decode the array to OpenCV usable format ;)
-    img = cv2.imdecode(imgNp,-1)
-
-
-	# put the image on screen
-    cv2.imshow('IPWebcam',img)
-
-    #To give the processor some less stress
-    #time.sleep(0.1)
-
-    # Quit if q is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
