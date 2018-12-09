@@ -41,17 +41,17 @@ NUM_CLASSES = 90
 # ## Download Model
 
 '''if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
-    print ('Downloading the model')
-    opener = urllib.request.URLopener()
-    opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-    tar_file = tarfile.open(MODEL_FILE)
-    for file in tar_file.getmembers():
-      file_name = os.path.basename(file.name)
-      if 'frozen_inference_graph.pb' in file_name:
-        tar_file.extract(file, os.getcwd())
-    print ('Download complete')
+	print ('Downloading the model')
+	opener = urllib.request.URLopener()
+	opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+	tar_file = tarfile.open(MODEL_FILE)
+	for file in tar_file.getmembers():
+	  file_name = os.path.basename(file.name)
+	  if 'frozen_inference_graph.pb' in file_name:
+		tar_file.extract(file, os.getcwd())
+	print ('Download complete')
 else:
-    print ('Model already exists')'''
+	print ('Model already exists')'''
 
 # ## Load a (frozen) Tensorflow model into memory.
 
@@ -73,43 +73,43 @@ category_index = label_map_util.create_category_index(categories)
 
 #intializing the web camera device
 def getImage():
-    LINK = "http://10.42.0.99:8080/shot.jpg"
-    r = requests.get(LINK)
-    nparr = np.fromstring(r.content, np.uint8)
-    cimg = cv2.imdecode(nparr, cv2.IMREAD_ANYCOLOR)
+	LINK = "http://10.42.0.99:8080/shot.jpg"
+	r = requests.get(LINK)
+	nparr = np.fromstring(r.content, np.uint8)
+	cimg = cv2.imdecode(nparr, cv2.IMREAD_ANYCOLOR)
 
-    return cimg
+	return cimg
 
 cap = cv2.VideoCapture(0)
 # cap = getImage()                        #phoneCam
 def speak(str):
-    engine =p.init()
-    engine.say(str)
-    engine.runAndWait()
-    time.sleep(1)
-    
-    
-def listener():
-    retu=input('write: ')
-    return (retu)
-    
+	engine =p.init()
+	engine.say(str)
+	engine.runAndWait()
+	time.sleep(1)
+	
+	
 def listener1():
-    r = sr.Recognizer()                                                                                   
-    with sr.Microphone() as source:                                                                       
-        print("Speak:")                                                                                   
-        audio = r.listen(source)   
+	retu=input('write: ')
+	return (retu)
+	
+def listener():
+	r = sr.Recognizer()                                                                                   
+	with sr.Microphone() as source:                                                                       
+		print("Speak: ")                                                                                   
+		audio = r.listen(source)   
 
-    try:
-        print("You said " + r.recognize_google(audio))
-    except sr.UnknownValueError:
-        print("Could not understand audio")
-    except sr.RequestError as e:
-        print("Could not request results; {0}".format(e))
-    return(r.recognize_google(audio))
-    
+	try:
+		print("You said " + r.recognize_google(audio))
+	except sr.UnknownValueError:
+		print("Could not understand audio")
+	except sr.RequestError as e:
+		print("Could not request results; {0}".format(e))
+	return(r.recognize_google(audio))
+	
 
 todo=0
-        
+		
 def dodger():
 	for i,b in enumerate(boxes[0]):
 		if classes[0][i] == 3 or classes[0][i]==6 or classes[0][i]==1 or classes[0][i]==8 or classes[0][i]==62:
@@ -128,7 +128,7 @@ def dodger():
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
 						print("Try left. {} ahead".format(category_index[classes[0][i]]['name']))
 						speak("Try left. {} ahead".format(category_index[classes[0][i]]['name']))
-                         
+						 
 
 def sendMail():
 	lat, lon = getCoord()
@@ -151,40 +151,43 @@ def sendMail():
 	server.sendmail(gmail_user, [TO], BODY)
 	print ('email sent')
 
-              
+			  
 def ask():
-    global todo
-    speak("what do you want me to do")
-    print("what do you want me to do?")
-    print("1: find X\n2: walk with me\n3: how is the weather\n4: where am i")
-    instruct=input("Answer : ")
-    lis=instruct.split(" ")
+	global todo
+	speak("what do you want me to do")
+	print("what do you want me to do?")
+	print("1: find X\n2: walk with me\n3: how is the weather\n4: where am i")
+	# instruct=input("Answer : ")
+	instruct = listener()
+	lis=instruct.split(" ")
 
-    if lis[0]=='find':
-        todo=1
+	if lis[0]=='find':
+		todo=1
 
-        #speak('what do you want to search for')
-        #print('speak')
-        #stri=listener()
-        #obj=stri
-        
-        obj=lis[-1]
-        print('finding '+obj)
-        return obj
-        
-    elif lis[0]=='walk':
-        todo=2
-        return None
-    elif lis[-1]=='weather':
-        todo=3
-        return None
-    elif lis[0] == 'where':
-        todo=4
-        return None
-    else:
-        todo=0
-        return None
-        
+		#speak('what do you want to search for')
+		#print('speak')
+		#stri=listener()
+		#obj=stri
+		
+		obj=lis[-1]
+		print('finding '+obj)
+		return obj
+		
+	elif lis[0]=='walk':
+		print("Press 's' to send EMERGENCY MAIL")
+		speak("Press 's' to send EMERGENCY MAIL")
+		todo=2
+		return None
+	elif lis[-1]=='weather':
+		todo=3
+		return None
+	elif lis[0] == 'where':
+		todo=4
+		return None
+	else:
+		todo=0
+		return None
+		
 def finder(obj):
 	for i in range(len(boxes[0])):
 		score = scores[0][i]
@@ -193,7 +196,7 @@ def finder(obj):
 			print(name + " is infront of you")
 			speak(name + " is infront of you")
 			
-              
+			  
 def climate():
 	g = geocoder.ip('me')
 	lat, lon = g.latlng
@@ -206,7 +209,7 @@ def climate():
 	condition = lookup.condition
 	print("it is "+condition.text+" outside")
 	speak("it is "+condition.text+" outside")
-              
+			  
 # Running the tensorflow session
 with detection_graph.as_default():
 	with tf.Session(graph=detection_graph) as sess:
