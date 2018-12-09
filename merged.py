@@ -126,7 +126,29 @@ def dodger():
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
 						speak("stop something is infront of you, try left")
                          
-                  
+
+def sendMail():
+	lat, lon = getCoord()
+	addr = getAddr(lat, lon)['display_name']
+
+	gmail_user = "tsibasish@gmail.com"
+	gmail_pwd = "bhubanes"
+	TO = 'subhrajit1997@gmail.com'
+	SUBJECT = "EMERGENCY! HELP!"
+	TEXT = "Hey! I have run into some problems. Please pick me up. I'm at {}.\nCoordinates are {} {}".format(addr, lat, lon)
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.ehlo()
+	server.starttls()
+	server.login(gmail_user, gmail_pwd)
+	BODY = '\r\n'.join(['To: %s' % TO,
+			'From: %s' % gmail_user,
+			'Subject: %s' % SUBJECT,
+			'', TEXT])
+
+	server.sendmail(gmail_user, [TO], BODY)
+	print ('email sent')
+
+              
 def ask():
     global todo
     speak("what do you want me to do")
@@ -234,7 +256,8 @@ with detection_graph.as_default():
 				cap.release()
 				break
 			elif cv2.waitKey(5) & 0xFF == ord('s'):   #for sending mail
-				break
+				sendMail()
+
 
 cv2.destroyAllWindows()
 cap.release()
