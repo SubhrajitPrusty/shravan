@@ -9,6 +9,7 @@ A "eye" for blind
 	- We need to use only object_detection part, so downloading only that will suffice
 	- Installation for object_detection [link](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md)
 	- We have to download protoc binary for windows separately
+	- Run the proto compiler for the folders inside this repo
 - Install all the requirements `pip install -r requirements.txt`
 - Change all the IP addresses to match your device configurations
 - Run `location.py` on your phone to avail GPS functions.
