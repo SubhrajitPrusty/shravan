@@ -18,6 +18,7 @@ import geocoder
 from weather import Weather, Unit
 
 from map import *
+import smtplib
 
 # # Model preparation 
 # Any model exported using the `export_inference_graph.py` tool can be loaded here simply by changing `PATH_TO_CKPT` to point to a new .pb file.  
@@ -121,10 +122,12 @@ def dodger():
 				if apx_distance<=0.5: 
 					if mid_x >0.3 and mid_x<0.5 and diff_x>0.4:
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
-						speak("stop something is infront of you , try right")
+						print("Try right. {} ahead".format(category_index[classes[0][i]]['name']))
+						speak("Try right. {} ahead".format(category_index[classes[0][i]]['name']))
 					if mid_x >0.5 and mid_x<0.7 and diff_x>0.4:
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
-						speak("stop something is infront of you, try left")
+						print("Try left. {} ahead".format(category_index[classes[0][i]]['name']))
+						speak("Try left. {} ahead".format(category_index[classes[0][i]]['name']))
                          
 
 def sendMail():
@@ -187,8 +190,9 @@ def finder(obj):
 		score = scores[0][i]
 		name = category_index[classes[0][i]]['name']
 		if score > 0.5 and name == obj:
-			speak(name)
-			print(name, "is in center")
+			print(name + " is infront of you")
+			speak(name + " is infront of you")
+			
               
 def climate():
 	g = geocoder.ip('me')
@@ -200,6 +204,7 @@ def climate():
 	weather = Weather(Unit.CELSIUS)
 	lookup = weather.lookup_by_latlng(lat, lon)
 	condition = lookup.condition
+	print("it is "+condition.text+" outside")
 	speak("it is "+condition.text+" outside")
               
 # Running the tensorflow session
