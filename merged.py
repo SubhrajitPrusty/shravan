@@ -39,7 +39,7 @@ NUM_CLASSES = 90
 
 # ## Download Model
 
-if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
+'''if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
     print ('Downloading the model')
     opener = urllib.request.URLopener()
     opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
@@ -50,7 +50,7 @@ if not os.path.exists(MODEL_NAME + '/frozen_inference_graph.pb'):
         tar_file.extract(file, os.getcwd())
     print ('Download complete')
 else:
-    print ('Model already exists')
+    print ('Model already exists')'''
 
 # ## Load a (frozen) Tensorflow model into memory.
 
@@ -111,17 +111,18 @@ todo=0
         
 def dodger():
 	for i,b in enumerate(boxes[0]):
-		if classes[0][i] == 3 or classes[0][i]==6 or classes[0][i]==1 or classes[0][i]==8:
+		if classes[0][i] == 3 or classes[0][i]==6 or classes[0][i]==1 or classes[0][i]==8 or classes[0][i]==62:
 			if scores[0][i]>0.5:
 				mid_x = (boxes[0][i][3] +boxes[0][i][1])/2
 				mid_y = (boxes[0][i][2] +boxes[0][i][0])/2
+				diff_x = boxes[0][i][3] - boxes[0][i][1]
 				apx_distance = round((1-(boxes[0][i][3] - boxes[0][i][1]))**4,1)
 				cv2.putText(image_np,'{}'.format(apx_distance),(int(mid_x*800),int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,0.7,(255,255,255),2)
 				if apx_distance<=0.5: 
-					if mid_x >0.3 and mid_x<0.5:
+					if mid_x >0.3 and mid_x<0.5 and diff_x>0.4:
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
 						speak("stop something is infront of you , try right")
-					if mid_x >0.5 and mid_x<0.7:
+					if mid_x >0.5 and mid_x<0.7 and diff_x>0.4:
 						cv2.putText(image_np,'WARNING!',(int(mid_x*800)-50,int(mid_y*450)),cv2.FONT_HERSHEY_SIMPLEX,1.0,(0,0,255),3)
 						speak("stop something is infront of you, try left")
                          
@@ -212,7 +213,7 @@ with detection_graph.as_default():
 			#      plt.figure(figsize=IMAGE_SIZE)
 			#      plt.imshow(image_np)
 			if todo==0:
-				obj = func()
+				obj = ask()
 			if todo==1:
 				finder(obj)
 			if todo==2:
