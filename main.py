@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import sys
 import six.moves.urllib as urllib
 import tarfile
 import tensorflow as tf
@@ -72,8 +73,8 @@ categories = label_map_util.convert_label_map_to_categories(label_map, max_num_c
 category_index = label_map_util.create_category_index(categories)
 
 #intializing the web camera device
-def getImage():
-	LINK = "http://10.42.0.99:8080/shot.jpg"
+# NEEDS camera device IP address
+def getImage(LINK):
 	r = requests.get(LINK)
 	nparr = np.fromstring(r.content, np.uint8)
 	cimg = cv2.imdecode(nparr, cv2.IMREAD_ANYCOLOR)
@@ -89,15 +90,16 @@ def speak(str):
 	time.sleep(1)
 	
 	
-def listener1():
+def listener():
 	retu=input('write: ')
 	return (retu)
 	
-def listener():
-	r = sr.Recognizer()                                                                                   
+def listener1():
+	r = sr.Recognizer()
 	with sr.Microphone() as source:                                                                       
+		r.adjust_for_ambient_noise(source, duration=1)
 		print("Speak: ")                                                                                   
-		audio = r.listen(source)   
+		audio = r.listen(source, phrase_time_limit=5)
 
 	try:
 		print("You said " + r.recognize_google(audio))
